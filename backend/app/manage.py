@@ -16,29 +16,36 @@ def seed():
     if len(password)<12: raise SystemExit('Set DEMO_PASSWORD to at least 12 characters before seeding.')
     source=json.loads((Path(__file__).parent/'seed.json').read_text())
     with SessionLocal() as db:
-        if db.scalar(select(User.id).limit(1)): raise SystemExit('Database already has users; seed skipped.')
-        for p in source['people']:
-            db.add(User(**{k:v for k,v in p.items() if k!='manager_id'},password_hash=passwords.hash(password)))
-        db.flush()
-        for p in source['people']:
-            u=db.get(User,p['id']);u.manager_id=p.get('manager_id')
-        # Managers and department staff report to the designated cross-team manager.
-        for uid in [2,3,4,5,6,7]: db.get(User,uid).manager_id=10
-        db.get(User,10).manager_id=2
-        for f in source['flows']: db.add(Workflow(**f))
-        db.flush()
-        for row in source['requests']:
-            owner=db.get(User,row['owner_id'])
-            flows=[f for f in source['flows'] if f['category']==row['category'] and f['min_amount']<=row['amount'] and (f['max_amount'] is None or row['amount']<=f['max_amount'])]
-            db.add(ApprovalRequest(**{k:v for k,v in row.items() if k not in ['owner','department','comments','attachments']},workflow_id=flows[0]['id'],manager_id=owner.manager_id))
-        db.flush()
-        for a in source['audit']: db.add(AuditLog(**a))
-        if db.bind.dialect.name=='postgresql':
-            from sqlalchemy import text
-            for table in ['users','workflow_rules','requests','audit_logs']:
-                db.execute(text(f"SELECT setval(pg_get_serial_sequence('{table}','id'), COALESCE((SELECT MAX(id) FROM {table}),1))"))
+        existing={u.email.lower():u for u in db.scalars(select(User)).all()}
+        if not existing:
+            for p in source['people']:
+                db.add(User(**{k:v for k,v in p.items() if k!='manager_id'},password_hash=passwords.hash(password)))
+            db.flush()
+            for p in source['people']:
+                u=db.get(User,p['id']);u.manager_id=p.get('manager_id')
+            # Managers and department staff report to the designated cross-team manager.
+            for uid in [2,3,4,5,6,7]: db.get(User,uid).manager_id=10
+            db.get(User,10).manager_id=2
+            for f in source['flows']: db.add(Workflow(**f))
+            db.flush()
+            for row in source['requests']:
+                owner=db.get(User,row['owner_id'])
+                flows=[f for f in source['flows'] if f['category']==row['category'] and f['min_amount']<=row['amount'] and (f['max_amount'] is None or row['amount']<=f['max_amount'])]
+                db.add(ApprovalRequest(**{k:v for k,v in row.items() if k not in ['owner','department','comments','attachments']},workflow_id=flows[0]['id'],manager_id=owner.manager_id))
+            db.flush()
+            for a in source['audit']: db.add(AuditLog(**a))
+            if db.bind.dialect.name=='postgresql':
+                from sqlalchemy import text
+                for table in ['users','workflow_rules','requests','audit_logs']:
+                    db.execute(text(f"SELECT setval(pg_get_serial_sequence('{table}','id'), COALESCE((SELECT MAX(id) FROM {table}),1))"))
+        demo_email='demo@flowops.app'
+        if demo_email not in existing:
+            db.add(User(name='Demo Viewer',email=demo_email,password_hash=passwords.hash(password),role='Demo',department='Operations',manager_id=None,active=True))
+            print('Demo Viewer added. Sign in at demo@flowops.app with your DEMO_PASSWORD.')
+        else:
+            print('Demo Viewer already exists; production data left untouched.')
         db.commit()
-    print('Sample workspace created. Sign in with a seeded email and your DEMO_PASSWORD.')
+    print('Sample workspace ready. Sign in with a seeded email and your DEMO_PASSWORD.')
 def create_admin():
     email=input('Admin email: ').strip().lower();name=input('Admin name: ').strip()
     password=getpass.getpass('Password (12+ characters): ')

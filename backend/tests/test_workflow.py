@@ -28,6 +28,22 @@ def test_employee_object_security():
     c=client();assert all(r['owner_id']==1 for r in c.get('/requests').json())
     assert c.get('/requests/1047').status_code==403
     assert c.get('/requests/99999').status_code==404
+def test_demo_read_only_account():
+    d=client('demo@flowops.app');
+    assert d.get('/users/me').json()['role']=='Demo'
+    assert d.get('/requests').status_code==200
+    assert d.get('/users').status_code==200
+    assert d.get('/analytics/dashboard').status_code==200
+    assert d.get('/workflows').status_code==200
+
+    r=create(client())
+    assert d.post('/requests',json={'title':'Should fail','category':'Equipment','amount':2500,'reason':'Demo is read only and cannot create requests.','priority':'Normal'}).status_code==403
+    assert d.post(f"/requests/{r['id']}/comments/add",json={'text':'No comments allowed.'}).status_code==403
+    assert d.post(f"/requests/{r['id']}/attachments/upload",files={'file':('note.pdf',b'%PDF-1.4\n test','application/pdf')}).status_code==403
+    assert d.post('/notifications/read').status_code==403
+    assert d.post('/admin/workflows',json={'name':'Demo workflow','category':'Equipment','min_amount':0,'max_amount':1000,'roles':['Manager','IT'],'active':True}).status_code==403
+    assert d.put('/admin/users/1',json={'role':'Admin'}).status_code==403
+
 def test_complete_multistage_workflow():
     r=create(client());assert [s['role'] for s in r['steps']]==['Manager','IT','Finance']
     for email in ['raish@flowops.local','neha@flowops.local','priya@flowops.local']:

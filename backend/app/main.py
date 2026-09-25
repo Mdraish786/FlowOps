@@ -27,6 +27,14 @@ async def protection(request:Request,call_next):
         length=request.headers.get('content-length')
         if length and (not length.isdigit() or int(length)>6*1024*1024):
             return JSONResponse({'detail':'Request too large.'},status_code=413)
+        if request.method in ['POST','PUT','PATCH','DELETE'] and request.url.path not in ['/auth/login','/auth/refresh','/auth/forgot-password','/auth/reset-password']:
+            try:
+                with SessionLocal() as db:
+                    user=current_user(request,db)
+                    if user.role=='Demo':
+                        return JSONResponse({'detail':'Demo account is read-only.'},status_code=403)
+            except HTTPException:
+                pass
     result=await call_next(request)
     result.headers['X-Content-Type-Options']='nosniff'
     result.headers['X-Frame-Options']='DENY'

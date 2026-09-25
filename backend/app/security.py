@@ -51,7 +51,12 @@ def current_user(request:Request,db:Session=Depends(db_session)):
         return user
     except (jwt.PyJWTError,ValueError,TypeError): raise HTTPException(401,'Please sign in to continue.')
 def admin(user:User=Depends(current_user)):
+    if user.role=='Demo': raise HTTPException(403,'Demo account is read-only.')
     if user.role!='Admin': raise HTTPException(403,'Administrator access required.')
+    return user
+
+def demo_read_only(user:User=Depends(current_user)):
+    if user.role=='Demo': raise HTTPException(403,'Demo account is read-only.')
     return user
 
 def issue(db,user,response,session=None):

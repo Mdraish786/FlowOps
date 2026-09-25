@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Literal
 from pydantic import BaseModel, Field, ConfigDict, field_validator, model_validator
-Role = Literal['Employee','Manager','IT','Finance','HR','Director','Admin']
+Role = Literal['Employee','Manager','IT','Finance','HR','Director','Admin','Demo']
 Category = Literal['Equipment','Software','Cloud resources','Access','Reimbursement','Leave','Vendor payment','Training']
 class Schema(BaseModel):
     model_config=ConfigDict(extra='forbid', str_strip_whitespace=True)
@@ -31,7 +31,7 @@ class NewWorkflow(Schema):
     @model_validator(mode='after')
     def valid(self):
         if self.max_amount is not None and self.max_amount<self.min_amount: raise ValueError('Invalid amount range')
-        if any(r in ['Admin','Employee'] for r in self.roles): raise ValueError('Only approver roles are allowed')
+        if any(r in ['Admin','Employee','Demo'] for r in self.roles): raise ValueError('Only approver roles are allowed')
         if len(self.roles)!=len(set(self.roles)): raise ValueError('Duplicate approval roles are not allowed')
         return self
 class NewUser(Schema):

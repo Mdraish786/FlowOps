@@ -4,8 +4,10 @@ from fastapi import HTTPException
 from .models import User,Workflow,ApprovalRequest,Comment,Attachment,AuditLog,Notification,now
 
 def can_view(r,u):
+    if u.role=='Demo': return True
     return u.role=='Admin' or r.owner_id==u.id or u.role=='Manager' and r.manager_id==u.id or u.role not in ['Employee','Manager'] and any(s['role']==u.role for s in r.steps)
 def can_approve(r,u):
+    if u.role=='Demo': return False
     step=next((s for s in r.steps if s['status']=='Pending'),None)
     return r.status=='Pending' and r.owner_id!=u.id and step and step['role']==u.role and (u.role!='Manager' or r.manager_id==u.id)
 def load_request(db,rid,user,lock=False):
