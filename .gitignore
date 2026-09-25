@@ -1,0 +1,10 @@
+node_modules/
+frontend-dist/
+.env
+backend/.env
+backend/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/*.db
+**/private-uploads/
+*.tsbuildinfo

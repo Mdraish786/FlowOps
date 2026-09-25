@@ -1,0 +1,85 @@
+x-backend: &backend
+  build:
+    context: .
+    dockerfile: docker/backend.Dockerfile
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql+psycopg://flowops:${POSTGRES_PASSWORD}@postgres:5432/flowops
+    REDIS_URL: redis://redis:6379/0
+    UPLOAD_DIR: /app/private-uploads
+  volumes:
+    - uploads:/app/private-uploads
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: flowops
+      POSTGRES_USER: flowops
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Run python scripts/setup.py first}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U flowops -d flowops']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  redis:
+    image: redis:7-alpine
+    command: [redis-server, --appendonly, 'yes']
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  migrate:
+    <<: *backend
+    command: [alembic, upgrade, head]
+    restart: 'no'
+  backend:
+    <<: *backend
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    ports:
+      - '127.0.0.1:8080:80'
+    depends_on:
+      backend:
+        condition: service_healthy
+  worker:
+    <<: *backend
+    command: [celery, -A, app.tasks.celery, worker, --loglevel=info]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+  beat:
+    <<: *backend
+    command: [celery, -A, app.tasks.celery, beat, --loglevel=info, --schedule=/tmp/celerybeat-schedule]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+  clamav:
+    image: clamav/clamav:stable
+    profiles: [secure]
+    volumes:
+      - clamdata:/var/lib/clamav
+volumes:
+  pgdata:
+  redisdata:
+  uploads:
+  clamdata:

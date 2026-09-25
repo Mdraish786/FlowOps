@@ -1,0 +1,14 @@
+node_modules
+.git
+.env
+.env.*
+**/__pycache__
+**/.pytest_cache
+**/*.db
+**/.venv
+frontend-dist
+dist
+.sites-runtime
+.wrangler
+private-uploads
+*.zip

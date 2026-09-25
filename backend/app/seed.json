@@ -1,0 +1,588 @@
+{
+  "people": [
+    {
+      "id": 1,
+      "name": "Arjun Patel",
+      "email": "arjun@flowops.local",
+      "role": "Employee",
+      "department": "Engineering",
+      "manager_id": 2
+    },
+    {
+      "id": 2,
+      "name": "Md Raish",
+      "email": "raish@flowops.local",
+      "role": "Manager",
+      "department": "Engineering"
+    },
+    {
+      "id": 3,
+      "name": "Neha Sharma",
+      "email": "neha@flowops.local",
+      "role": "IT",
+      "department": "IT"
+    },
+    {
+      "id": 4,
+      "name": "Priya Singh",
+      "email": "priya@flowops.local",
+      "role": "Finance",
+      "department": "Finance"
+    },
+    {
+      "id": 5,
+      "name": "Rohan Das",
+      "email": "rohan@flowops.local",
+      "role": "HR",
+      "department": "People"
+    },
+    {
+      "id": 6,
+      "name": "Ananya Rao",
+      "email": "ananya@flowops.local",
+      "role": "Director",
+      "department": "Leadership"
+    },
+    {
+      "id": 7,
+      "name": "Workspace Admin",
+      "email": "admin@flowops.local",
+      "role": "Admin",
+      "department": "Operations"
+    },
+    {
+      "id": 8,
+      "name": "Sara Khan",
+      "email": "sara@flowops.local",
+      "role": "Employee",
+      "department": "Engineering",
+      "manager_id": 2
+    },
+    {
+      "id": 9,
+      "name": "Vikram Shah",
+      "email": "vikram@flowops.local",
+      "role": "Employee",
+      "department": "Design",
+      "manager_id": 10
+    },
+    {
+      "id": 10,
+      "name": "Meera Joshi",
+      "email": "meera@flowops.local",
+      "role": "Manager",
+      "department": "Design"
+    }
+  ],
+  "flows": [
+    {
+      "id": 1,
+      "name": "Everyday equipment",
+      "category": "Equipment",
+      "min_amount": 0,
+      "max_amount": 19999.99,
+      "roles": [
+        "Manager"
+      ],
+      "active": true
+    },
+    {
+      "id": 2,
+      "name": "Team equipment",
+      "category": "Equipment",
+      "min_amount": 20000,
+      "max_amount": 50000,
+      "roles": [
+        "Manager",
+        "IT"
+      ],
+      "active": true
+    },
+    {
+      "id": 3,
+      "name": "High-value equipment",
+      "category": "Equipment",
+      "min_amount": 50000.01,
+      "max_amount": 100000,
+      "roles": [
+        "Manager",
+        "IT",
+        "Finance"
+      ],
+      "active": true
+    },
+    {
+      "id": 4,
+      "name": "Capital purchases",
+      "category": "Equipment",
+      "min_amount": 100000.01,
+      "max_amount": null,
+      "roles": [
+        "Manager",
+        "IT",
+        "Finance",
+        "Director"
+      ],
+      "active": true
+    },
+    {
+      "id": 5,
+      "name": "Software approval",
+      "category": "Software",
+      "min_amount": 0,
+      "max_amount": null,
+      "roles": [
+        "Manager",
+        "IT",
+        "Finance"
+      ],
+      "active": true
+    },
+    {
+      "id": 6,
+      "name": "Cloud resources approval",
+      "category": "Cloud resources",
+      "min_amount": 0,
+      "max_amount": null,
+      "roles": [
+        "Manager",
+        "IT",
+        "Finance"
+      ],
+      "active": true
+    },
+    {
+      "id": 7,
+      "name": "Access approval",
+      "category": "Access",
+      "min_amount": 0,
+      "max_amount": null,
+      "roles": [
+        "Manager",
+        "IT"
+      ],
+      "active": true
+    },
+    {
+      "id": 8,
+      "name": "Reimbursement approval",
+      "category": "Reimbursement",
+      "min_amount": 0,
+      "max_amount": null,
+      "roles": [
+        "Manager",
+        "Finance"
+      ],
+      "active": true
+    },
+    {
+      "id": 9,
+      "name": "Leave approval",
+      "category": "Leave",
+      "min_amount": 0,
+      "max_amount": null,
+      "roles": [
+        "Manager",
+        "HR"
+      ],
+      "active": true
+    },
+    {
+      "id": 10,
+      "name": "Vendor payment approval",
+      "category": "Vendor payment",
+      "min_amount": 0,
+      "max_amount": null,
+      "roles": [
+        "Manager",
+        "Finance"
+      ],
+      "active": true
+    },
+    {
+      "id": 11,
+      "name": "Training approval",
+      "category": "Training",
+      "min_amount": 0,
+      "max_amount": null,
+      "roles": [
+        "Manager",
+        "HR"
+      ],
+      "active": true
+    }
+  ],
+  "requests": [
+    {
+      "id": 1048,
+      "title": "MacBook Pro for development",
+      "category": "Equipment",
+      "amount": 75000,
+      "owner_id": 1,
+      "owner": "Arjun Patel",
+      "department": "Engineering",
+      "priority": "High",
+      "status": "Pending",
+      "reason": "Our current equipment is slowing down development and testing. This replacement will support the next product release and our daily work.",
+      "created_at": "2026-09-24T08:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Pending"
+        },
+        {
+          "role": "IT",
+          "status": "Waiting"
+        },
+        {
+          "role": "Finance",
+          "status": "Waiting"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1047,
+      "title": "Figma Professional · annual plan",
+      "category": "Software",
+      "amount": 18000,
+      "owner_id": 8,
+      "owner": "Sara Khan",
+      "department": "Engineering",
+      "priority": "Normal",
+      "status": "Pending",
+      "reason": "Required for the team’s ongoing work. Please review the business need and the requested budget.",
+      "created_at": "2026-09-24T09:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Pending"
+        },
+        {
+          "role": "IT",
+          "status": "Waiting"
+        },
+        {
+          "role": "Finance",
+          "status": "Waiting"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1046,
+      "title": "AWS staging environment",
+      "category": "Cloud resources",
+      "amount": 42000,
+      "owner_id": 1,
+      "owner": "Arjun Patel",
+      "department": "Engineering",
+      "priority": "High",
+      "status": "Pending",
+      "reason": "Required for the team’s ongoing work. Please review the business need and the requested budget.",
+      "created_at": "2026-09-23T10:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Approved",
+          "actor": "Md Raish",
+          "at": "2026-09-22T09:00:00.000Z"
+        },
+        {
+          "role": "IT",
+          "status": "Pending"
+        },
+        {
+          "role": "Finance",
+          "status": "Waiting"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1045,
+      "title": "Client visit · travel expenses",
+      "category": "Reimbursement",
+      "amount": 6850,
+      "owner_id": 8,
+      "owner": "Sara Khan",
+      "department": "Engineering",
+      "priority": "Normal",
+      "status": "Pending",
+      "reason": "Required for the team’s ongoing work. Please review the business need and the requested budget.",
+      "created_at": "2026-09-23T11:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Pending"
+        },
+        {
+          "role": "Finance",
+          "status": "Waiting"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1044,
+      "title": "Production database access",
+      "category": "Access",
+      "amount": 0,
+      "owner_id": 1,
+      "owner": "Arjun Patel",
+      "department": "Engineering",
+      "priority": "Urgent",
+      "status": "Pending",
+      "reason": "Read-only access is required to investigate a customer issue. Access is needed for seven days and can be revoked once the investigation is complete.",
+      "created_at": "2026-09-22T12:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Pending"
+        },
+        {
+          "role": "IT",
+          "status": "Waiting"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1043,
+      "title": "Annual leave · 3 days",
+      "category": "Leave",
+      "amount": 0,
+      "owner_id": 8,
+      "owner": "Sara Khan",
+      "department": "Engineering",
+      "priority": "Normal",
+      "status": "Approved",
+      "reason": "Required for the team’s ongoing work. Please review the business need and the requested budget.",
+      "created_at": "2026-09-22T13:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Approved",
+          "actor": "Md Raish",
+          "at": "2026-09-19T09:00:00.000Z"
+        },
+        {
+          "role": "HR",
+          "status": "Approved",
+          "actor": "Rohan Das",
+          "at": "2026-09-19T09:00:00.000Z"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1042,
+      "title": "Dell UltraSharp 27-inch monitor",
+      "category": "Equipment",
+      "amount": 32000,
+      "owner_id": 1,
+      "owner": "Arjun Patel",
+      "department": "Engineering",
+      "priority": "Normal",
+      "status": "Approved",
+      "reason": "Our current equipment is slowing down development and testing. This replacement will support the next product release and our daily work.",
+      "created_at": "2026-09-21T08:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Approved",
+          "actor": "Md Raish",
+          "at": "2026-09-18T09:00:00.000Z"
+        },
+        {
+          "role": "IT",
+          "status": "Approved",
+          "actor": "Neha Sharma",
+          "at": "2026-09-18T09:00:00.000Z"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1041,
+      "title": "Notion team subscription",
+      "category": "Software",
+      "amount": 12000,
+      "owner_id": 8,
+      "owner": "Sara Khan",
+      "department": "Engineering",
+      "priority": "Normal",
+      "status": "Pending",
+      "reason": "Required for the team’s ongoing work. Please review the business need and the requested budget.",
+      "created_at": "2026-09-21T09:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Approved",
+          "actor": "Md Raish",
+          "at": "2026-09-17T09:00:00.000Z"
+        },
+        {
+          "role": "IT",
+          "status": "Approved",
+          "actor": "Neha Sharma",
+          "at": "2026-09-17T09:00:00.000Z"
+        },
+        {
+          "role": "Finance",
+          "status": "Pending"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1040,
+      "title": "Q3 vendor invoice",
+      "category": "Vendor payment",
+      "amount": 86000,
+      "owner_id": 1,
+      "owner": "Arjun Patel",
+      "department": "Engineering",
+      "priority": "High",
+      "status": "Pending",
+      "reason": "Required for the team’s ongoing work. Please review the business need and the requested budget.",
+      "created_at": "2026-09-20T10:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Pending"
+        },
+        {
+          "role": "Finance",
+          "status": "Waiting"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1039,
+      "title": "React Advanced workshop",
+      "category": "Training",
+      "amount": 4500,
+      "owner_id": 8,
+      "owner": "Sara Khan",
+      "department": "Engineering",
+      "priority": "Normal",
+      "status": "Rejected",
+      "reason": "Required for the team’s ongoing work. Please review the business need and the requested budget.",
+      "created_at": "2026-09-20T11:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Rejected"
+        },
+        {
+          "role": "HR",
+          "status": "Waiting"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1038,
+      "title": "Office accessories",
+      "category": "Equipment",
+      "amount": 3500,
+      "owner_id": 1,
+      "owner": "Arjun Patel",
+      "department": "Engineering",
+      "priority": "Normal",
+      "status": "Approved",
+      "reason": "Our current equipment is slowing down development and testing. This replacement will support the next product release and our daily work.",
+      "created_at": "2026-09-19T12:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Approved",
+          "actor": "Md Raish",
+          "at": "2026-09-14T09:00:00.000Z"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    },
+    {
+      "id": 1037,
+      "title": "Design workstation",
+      "category": "Equipment",
+      "amount": 125000,
+      "owner_id": 9,
+      "owner": "Vikram Shah",
+      "department": "Design",
+      "priority": "High",
+      "status": "Pending",
+      "reason": "Our current equipment is slowing down development and testing. This replacement will support the next product release and our daily work.",
+      "created_at": "2026-09-19T13:25:00.000Z",
+      "steps": [
+        {
+          "role": "Manager",
+          "status": "Pending"
+        },
+        {
+          "role": "IT",
+          "status": "Waiting"
+        },
+        {
+          "role": "Finance",
+          "status": "Waiting"
+        },
+        {
+          "role": "Director",
+          "status": "Waiting"
+        }
+      ],
+      "comments": [],
+      "attachments": [],
+      "version": 1
+    }
+  ],
+  "audit": [
+    {
+      "id": 1,
+      "actor": "Rohan Das",
+      "action": "Approved request",
+      "target": "REQ-1043",
+      "at": "2026-09-24T09:42:00Z"
+    },
+    {
+      "id": 2,
+      "actor": "Arjun Patel",
+      "action": "Submitted request",
+      "target": "REQ-1048",
+      "at": "2026-09-24T08:25:00Z"
+    },
+    {
+      "id": 3,
+      "actor": "Priya Singh",
+      "action": "Approved request",
+      "target": "REQ-1042",
+      "at": "2026-09-24T08:10:00Z"
+    }
+  ]
+}
