@@ -13,6 +13,7 @@ from .models import User,LoginSession
 s=settings()
 passwords=PasswordHasher()
 dummy_hash=passwords.hash(secrets.token_urlsafe(32))
+DEMO_EMAIL='demo@flowops.app'
 redis_client=redis.Redis.from_url(s.redis_url) if s.redis_url else None
 buckets=defaultdict(list)
 bucket_lock=threading.Lock()
@@ -36,6 +37,15 @@ def rate_limit(key,limit=8,seconds=300):
 def verify(password,hashed):
     try: return passwords.verify(hashed,password)
     except (VerifyMismatchError,InvalidHashError): return False
+
+def ensure_demo_user(db:Session):
+    user=db.scalar(select(User).where(User.email==DEMO_EMAIL).with_for_update())
+    if user:
+        if not user.active: user.active=True
+        return user
+    demo_password=s.demo_password or secrets.token_urlsafe(32)
+    user=User(name='Demo Viewer',email=DEMO_EMAIL,password_hash=passwords.hash(demo_password),role='Demo',department='Operations',manager_id=None,active=True)
+    db.add(user);db.flush();return user
 
 def user_dict(u): return {k:getattr(u,k) for k in ('id','name','email','role','department','manager_id','active')}
 def current_user(request:Request,db:Session=Depends(db_session)):

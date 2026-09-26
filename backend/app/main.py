@@ -11,7 +11,7 @@ from .config import settings
 from .database import db_session,SessionLocal,engine
 from .models import *
 from .schemas import *
-from .security import current_user,admin,passwords,verify,verify_otp,issue,digest,rate_limit,user_dict,dummy_hash
+from .security import current_user,admin,passwords,verify,verify_otp,issue,digest,rate_limit,user_dict,dummy_hash,ensure_demo_user,DEMO_EMAIL
 from .services import *
 s=settings()
 app=FastAPI(title='FlowOps API',version='1.0.0',docs_url='/docs' if not s.secure else None,redoc_url=None)
@@ -27,7 +27,7 @@ async def protection(request:Request,call_next):
         length=request.headers.get('content-length')
         if length and (not length.isdigit() or int(length)>6*1024*1024):
             return JSONResponse({'detail':'Request too large.'},status_code=413)
-        if request.method in ['POST','PUT','PATCH','DELETE'] and request.url.path not in ['/auth/login','/auth/refresh','/auth/forgot-password','/auth/reset-password']:
+        if request.method in ['POST','PUT','PATCH','DELETE'] and request.url.path not in ['/auth/login','/auth/demo','/auth/logout','/auth/refresh','/auth/forgot-password','/auth/reset-password']:
             try:
                 with SessionLocal() as db:
                     user=current_user(request,db)
@@ -64,6 +64,18 @@ def login(data:Login,request:Request,response:Response,db:Session=Depends(db_ses
         log(db,user,'Failed login','Authentication');db.commit()
         raise HTTPException(401,'Invalid email, password, or authenticator code.')
     issue(db,user,response);log(db,user,'Signed in','Authentication');db.commit()
+    return user_dict(user)
+
+@app.post('/auth/demo')
+def demo(request:Request,response:Response,db:Session=Depends(db_session)):
+    if request.cookies.get('flowops_access'):
+        raise HTTPException(403,'Demo account is read-only.')
+    ip=request.client.host if request.client else 'unknown'
+    rate_limit('demo:ip:'+ip,20)
+    user=ensure_demo_user(db)
+    if user.role!='Demo' or user.email.lower()!=DEMO_EMAIL:
+        raise HTTPException(403,'Demo account is read-only.')
+    issue(db,user,response);log(db,user,'Signed in as demo','Authentication');db.commit()
     return user_dict(user)
 
 @app.post('/auth/refresh')

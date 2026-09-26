@@ -28,6 +28,15 @@ def test_employee_object_security():
     c=client();assert all(r['owner_id']==1 for r in c.get('/requests').json())
     assert c.get('/requests/1047').status_code==403
     assert c.get('/requests/99999').status_code==404
+
+def test_public_demo_auth_endpoint():
+    c=TestClient(app,headers={'Origin':'http://localhost:5173'})
+    r=c.post('/auth/demo')
+    assert r.status_code==200,r.text
+    body=r.json();assert body['role']=='Demo';assert body['email']=='demo@flowops.app'
+    assert c.get('/users/me').json()['role']=='Demo'
+    assert c.post('/requests',json={'title':'Should fail','category':'Equipment','amount':2500,'reason':'Public demo login cannot create requests.','priority':'Normal'}).status_code==403
+
 def test_demo_read_only_account():
     d=client('demo@flowops.app');
     assert d.get('/users/me').json()['role']=='Demo'
